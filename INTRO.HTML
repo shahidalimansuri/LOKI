@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head> 
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Loki | God of Mischief</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+	<style>
+		:root {
+			--paper: #f1d6a1;
+			--paper-soft: #c6a875;
+			--amber: #e4a93a;
+			--orange: #b85d20;
+			--ink: #211510;
+			--tva: #25201b;
+			--shadow: #120e0b;
+		}
+
+		* { box-sizing: border-box; }
+
+		html, body {
+			margin: 0;
+			min-height: 100%;
+			background: var(--shadow);
+		}
+
+		body {
+			color: var(--paper);
+			font-family: "DM Sans", sans-serif;
+			overflow-x: hidden;
+		}
+
+		.hero {
+			position: relative;
+			height: 100svh;
+			min-height: 720px;
+			isolation: isolate;
+			display: grid;
+			place-items: center;
+			overflow: hidden;
+			background-color: var(--tva);
+			background-image:
+				linear-gradient(rgba(228, 169, 58, .045) 1px, transparent 1px),
+				linear-gradient(90deg, rgba(228, 169, 58, .045) 1px, transparent 1px),
+				radial-gradient(circle at 50% 44%, #684326 0, #2d2118 38%, #17120f 78%);
+			background-size: 46px 46px, 46px 46px, auto;
+		}
+
+		.hero::before {
+			content: "";
+			position: absolute;
+			inset: 0;
+			z-index: -1;
+			background: repeating-linear-gradient(0deg, rgba(255, 214, 143, .025) 0, rgba(255, 214, 143, .025) 1px, transparent 1px, transparent 4px);
+			pointer-events: none;
+		}
+
+		.hero::after {
+			content: "";
+			position: absolute;
+			width: 70vw;
+			height: 70vw;
+			max-width: 920px;
+			max-height: 920px;
+			border: 1px solid rgba(228, 169, 58, .12);
+			border-radius: 50%;
+			box-shadow: 0 0 0 40px rgba(228, 169, 58, .025), 0 0 0 80px rgba(228, 169, 58, .018);
+			pointer-events: none;
+		}
+
+		.nav {
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 24px clamp(24px, 5vw, 72px);
+			animation: appear .9s ease both;
+		}
+
+		.mark {
+			color: var(--amber);
+			font-family: "Cinzel", serif;
+			font-size: 12px;
+			font-weight: 700;
+			letter-spacing: .28em;
+		}
+
+		.nav-note {
+			color: rgba(241, 214, 161, .62);
+			font-size: 10px;
+			letter-spacing: .24em;
+			text-transform: uppercase;
+		}
+
+		.tva-layout {
+			position: relative;
+			z-index: 1;
+			display: grid;
+			grid-template-columns: minmax(150px, 220px) minmax(320px, 1fr) minmax(150px, 220px);
+			align-items: center;
+			gap: clamp(12px, 2vw, 30px);
+			width: min(94vw, 1280px);
+		}
+
+		.dossiers {
+			display: grid;
+			gap: 18px;
+		}
+
+		.dossier {
+			position: relative;
+			min-height: 112px;
+			padding: 0;
+			border: 1px solid rgba(228, 169, 58, .5);
+			background: rgba(37, 32, 27, .82);
+			box-shadow: inset 0 0 0 3px rgba(18, 14, 11, .3), 0 8px 18px rgba(0, 0, 0, .18);
+			animation: rise .8s ease both;
+		}
+
+		.dossier:hover, .dossier:focus-within, .dossier.active {
+			border-color: var(--amber);
+			background: rgba(86, 52, 24, .88);
+			box-shadow: inset 0 0 0 3px rgba(228, 169, 58, .12), 0 0 22px rgba(228, 169, 58, .16);
+		}
+
+		.dossier-button {
+			display: block;
+			width: 100%;
+			min-height: 112px;
+			padding: 17px 18px;
+			border: 0;
+			background: transparent;
+			color: var(--paper-soft);
+			cursor: pointer;
+			font: inherit;
+			text-align: left;
+		}
+
+		.dossier::before {
+			content: "";
+			position: absolute;
+			top: 11px;
+			right: 12px;
+			width: 7px;
+			height: 7px;
+			border-radius: 50%;
+			background: var(--amber);
+			box-shadow: 0 0 10px var(--amber);
+		}
+
+		.dossier:nth-child(2) { animation-delay: .12s; }
+		.dossier:nth-child(3) { animation-delay: .24s; }
+		.right .dossier:nth-child(1) { animation-delay: .18s; }
+		.right .dossier:nth-child(2) { animation-delay: .3s; }
+		.right .dossier:nth-child(3) { animation-delay: .42s; }
+
+		.dossier-label {
+			display: block;
+			margin-bottom: 9px;
+			color: var(--amber);
+			font-size: 9px;
+			letter-spacing: .18em;
+			text-transform: uppercase;
+		}
+
+		.dossier strong {
+			display: block;
+			color: var(--paper);
+			font-family: "Cinzel", serif;
+			font-size: 15px;
+			font-weight: 600;
+			letter-spacing: .04em;
+		}
+
+		.dossier small {
+			display: block;
+			margin-top: 7px;
+			font-size: 10px;
+			letter-spacing: .08em;
+		}
+
+		.screen {
+			position: relative;
+			padding: 13px;
+			border: 1px solid var(--amber);
+			background: rgba(15, 12, 9, .76);
+			box-shadow: 0 0 0 8px rgba(37, 32, 27, .8), 0 0 0 9px rgba(228, 169, 58, .22), 0 22px 65px rgba(0, 0, 0, .45);
+			animation: appear 1s .15s ease both;
+		}
+
+		.screen::before, .screen::after {
+			content: "";
+			position: absolute;
+			width: 22px;
+			height: 22px;
+			border-color: var(--amber);
+			border-style: solid;
+		}
+		.screen::before { top: -7px; left: -7px; border-width: 2px 0 0 2px; }
+		.screen::after { right: -7px; bottom: -7px; border-width: 0 2px 2px 0; }
+
+		.screen-inner {
+			min-height: 445px;
+			padding: clamp(28px, 5vw, 72px) clamp(22px, 5vw, 64px);
+			background: linear-gradient(145deg, rgba(129, 73, 27, .78), rgba(45, 29, 17, .86));
+			text-align: center;
+		}
+
+		.screen-code {
+			color: var(--amber);
+			font-size: 9px;
+			letter-spacing: .3em;
+			text-transform: uppercase;
+			transform: translateY(-28px);
+		}
+
+		.screen-content {
+			animation: appear .35s ease both;
+		}
+
+		.detail-title {
+			margin: 22px auto 18px;
+			color: var(--paper);
+			font-family: "Cinzel", serif;
+			font-size: clamp(30px, 4vw, 54px);
+			font-weight: 600;
+			line-height: 1;
+			text-transform: uppercase;
+		}
+
+		.detail-title span { color: var(--amber); font-style: italic; }
+
+		.detail-copy {
+			max-width: 500px;
+			margin: 0 auto;
+			color: var(--paper-soft);
+			font-size: 14px;
+			line-height: 1.85;
+			text-align: left;
+		}
+
+		.detail-tag {
+			margin-top: 25px;
+			color: var(--amber);
+			font-size: 9px;
+			letter-spacing: .25em;
+			text-transform: uppercase;
+		}
+
+		.model-stage {
+			position: relative;
+			height: 156px;
+			margin: 20px auto 22px;
+			perspective: 500px;
+			overflow: hidden;
+			cursor: grab;
+			background: radial-gradient(ellipse, rgba(228, 169, 58, .24), transparent 65%);
+		}
+
+		.model-stage.dragging { cursor: grabbing; }
+
+		.three-model-stage canvas {
+			display: block;
+			width: 100% !important;
+			height: 100% !important;
+		}
+
+		.model {
+			position: absolute;
+			left: 50%;
+			bottom: 9px;
+			width: 76px;
+			height: 118px;
+			transform: translateX(-50%);
+			transform-style: preserve-3d;
+			animation: turn 5s ease-in-out infinite;
+		}
+
+		.model::before {
+			content: "";
+			position: absolute;
+			left: 22px;
+			top: 11px;
+			width: 32px;
+			height: 32px;
+			border: 2px solid var(--amber);
+			border-radius: 50%;
+			background: #3b281b;
+			box-shadow: 0 0 14px rgba(228, 169, 58, .28);
+		}
+
+		.model::after {
+			content: "";
+			position: absolute;
+			left: 12px;
+			top: 48px;
+			width: 52px;
+			height: 65px;
+			border: 2px solid var(--amber);
+			border-radius: 48% 48% 12% 12%;
+			background: linear-gradient(90deg, #1f271d 48%, #b78b35 49%, #1f271d 52%);
+			box-shadow: 0 0 18px rgba(228, 169, 58, .18);
+		}
+
+		@keyframes turn { 0%, 100% { transform: translateX(-50%) rotateY(-16deg); } 50% { transform: translateX(-50%) rotateY(16deg); } }
+
+		.content {
+			padding: 0;
+		}
+
+		.eyebrow {
+			display: flex;
+			align-items: center;
+			gap: 13px;
+			color: var(--amber);
+			font-size: 11px;
+			font-weight: 500;
+			letter-spacing: .38em;
+			text-transform: uppercase;
+			animation: rise .9s .15s ease both;
+		}
+
+		.eyebrow::before {
+			content: "";
+			width: 42px;
+			height: 1px;
+			background: var(--amber);
+		}
+
+		h1 {
+			max-width: 570px;
+			margin: 24px 0 22px;
+			font-family: "Cinzel", serif;
+			font-size: clamp(39px, 4.5vw, 70px);
+			font-weight: 600;
+			letter-spacing: .025em;
+			line-height: .98;
+			text-wrap: balance;
+			animation: rise 1s .28s ease both;
+		}
+
+		h1 span {
+			display: block;
+			color: var(--amber);
+			font-size: .72em;
+			font-style: italic;
+			letter-spacing: .04em;
+		}
+
+		.intro {
+			max-width: 420px;
+			margin: 0;
+			color: var(--paper-soft);
+			font-size: 15px;
+			line-height: 1.8;
+			animation: rise 1s .42s ease both;
+		}
+
+		.rule {
+			width: 88px;
+			height: 1px;
+			margin-top: 30px;
+			background: var(--amber);
+			animation: widen 1s .55s ease both;
+		}
+
+		.cta {
+			position: absolute;
+			z-index: 2;
+			bottom: 38px;
+			left: 50%;
+			display: inline-flex;
+			align-items: center;
+			gap: 13px;
+			padding: 12px 18px;
+			border: 0;
+			border-bottom: 1px solid rgba(228, 169, 58, .7);
+			background: transparent;
+			color: var(--paper);
+			cursor: pointer;
+			font-family: "DM Sans", sans-serif;
+			font-size: 10px;
+			letter-spacing: .22em;
+			text-transform: uppercase;
+			transform: translateX(-50%);
+			transition: color .3s ease, border-color .3s ease, gap .3s ease;
+			animation: appear 1s .8s ease both;
+		}
+
+		.cta::after {
+			content: "↗";
+			color: var(--amber);
+			font-size: 16px;
+			transition: transform .3s ease;
+		}
+
+		.cta:hover { gap: 19px; color: var(--amber); border-color: var(--paper); }
+		.cta:hover::after { transform: translate(3px, -3px); }
+
+		.scroll {
+			position: absolute;
+			right: clamp(24px, 5vw, 70px);
+			bottom: 40px;
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			color: rgba(241, 214, 161, .55);
+			font-size: 9px;
+			letter-spacing: .28em;
+			text-transform: uppercase;
+			writing-mode: vertical-rl;
+		}
+
+		.scroll::before { content: ""; width: 1px; height: 42px; background: var(--amber); }
+
+		@keyframes rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+		@keyframes appear { from { opacity: 0; } to { opacity: 1; } }
+		@keyframes widen { from { width: 0; } to { width: 88px; } }
+
+		@media (max-width: 640px) {
+			.nav { padding-top: 20px; }
+			.nav-note, .scroll { display: none; }
+			.hero { height: auto; min-height: 100svh; padding: 90px 0 100px; }
+			.tva-layout { grid-template-columns: 1fr; width: min(88vw, 520px); gap: 26px; }
+			.dossiers { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+			.dossier { min-height: 92px; padding: 12px 10px; }
+			.dossier-button { min-height: 92px; padding: 12px 10px; }
+			.dossier strong { font-size: 11px; }
+			.dossier small { font-size: 8px; }
+			.dossier-label { font-size: 7px; }
+			.screen { order: -1; }
+			.screen-inner { min-height: 390px; padding: 34px 18px; }
+			h1 { font-size: clamp(35px, 11vw, 60px); }
+			.cta { width: max-content; max-width: calc(100% - 42px); text-align: center; letter-spacing: .15em; }
+		}
+	</style>
+</head>
+<body>
+	<main class="hero">
+		<nav class="nav" aria-label="Main navigation">
+			<div class="mark">LOKI</div>
+				<div class="nav-note">Time Variance Authority · TIME CELL</div>
+		</nav>
+
+		<div class="tva-layout">
+			<div class="dossiers left" aria-label="Loki profile details">
+				<div class="dossier active"><button class="dossier-button" type="button" data-section="intro"><span class="dossier-label">01</span><strong>Intro</strong></button></div>
+				<div class="dossier"><button class="dossier-button" type="button" data-section="superpowers"><span class="dossier-label">02</span><strong>Superpowers</strong></button></div>
+				<div class="dossier"><button class="dossier-button" type="button" data-section="allies"><span class="dossier-label">03</span><strong>Allies</strong></button></div>
+			</div>
+
+			<section class="screen">
+				<div class="screen-inner">
+					<div class="screen-code">T. V. A. // Personal Archive</div>
+					<div class="screen-content" id="screen-content" aria-live="polite">
+						<div class="content">
+							<div class="eyebrow" id="detail-eyebrow">The one who writes his own story</div>
+							<h1 class="detail-title" id="detail-title">Welcome to the world of <span>the God of Mischief.</span></h1>
+							<p class="detail-copy" id="detail-copy">I am Loki Laufeyson, the biological son of Laufey and the adopted son of Odin, raised as a prince of Asgard alongside Thor. I spent much of my life seeking recognition, often feeling overshadowed by my brother and questioning where I truly belonged. I am the God of Mischief, and my journey has taken me from Asgard and Earth to the TVA and the branching timelines of the multiverse.</p>
+							<div class="rule" aria-hidden="true"></div>
+							<div class="detail-tag" id="detail-tag">Archive file 01 // Intro</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<div class="dossiers right" aria-label="Loki profile details">
+				<div class="dossier"><button class="dossier-button" type="button" data-section="model"><span class="dossier-label">04</span><strong>3-D View</strong></button></div>
+				<div class="dossier"><button class="dossier-button" type="button" data-section="history"><span class="dossier-label">05</span><strong>History</strong></button></div>
+				<div class="dossier"><button class="dossier-button" type="button" data-section="enemies"><span class="dossier-label">06</span><strong>Enemies</strong></button></div>
+			</div>
+		</div>
+
+		<a class="cta" href="HOME.HTML">Home</a>
+		<div class="scroll" aria-hidden="true">Enter the legend</div>
+	</main>
+	<script>
+		const archive = {
+			intro: {
+			eyebrow: "The one who writes his own story",
+			title: 'Welcome to the world of <span>the God of Mischief.</span>',
+			copy: "I am Loki Laufeyson, the biological son of Laufey and the adopted son of Odin, raised as a prince of Asgard alongside Thor. I spent much of my life seeking recognition, often feeling overshadowed by my brother and questioning where I truly belonged. I am the God of Mischief, and my journey has taken me from Asgard and Earth to the TVA and the branching timelines of the multiverse.",
+			tag: "Archive file 01 // Intro"
+		},
+			superpowers: {
+			eyebrow: "Power is more than strength",
+			title: "<span>02.</span> Superpowers",
+			copy: "I possess powerful Asgardian magic, including illusion casting, shapeshifting, teleportation, and the ability to create magical duplicates. My greatest weapons are often my intelligence, deception, and ability to manipulate situations rather than relying only on physical strength. Through my time with the TVA, I also learned to understand and influence temporal forces in ways far beyond my earlier abilities.",
+			tag: "Archive file 02 // Superpowers"
+		},
+			allies: {
+			eyebrow: "No king stands alone",
+			title: "<span>03.</span> Allies",
+			copy: "My brother Thor and I have fought, argued, betrayed, and ultimately stood beside each other when it mattered most. Sylvie became one of my closest allies as we escaped the TVA, faced dangerous threats, and confronted He Who Remains together. Mobius M. Mobius became a trusted friend who helped me understand the TVA and supported my struggle to protect the branching timelines.",
+			tag: "Archive file 03 // Allies"
+		},
+			model: {
+			eyebrow: "Variant visual record",
+			title: "<span>04.</span> 3-D View",
+			copy: "Imagine me standing inside the TVA, surrounded by enormous clocks, amber lights, analog monitors, and countless glowing timelines. You can rotate my 3-D character model to see my TVA-era appearance, clothing, expressions, and details from every angle. Around me, the environment shifts between Asgardian imagery and the TVA's retro-futuristic halls, reflecting the many paths my life has taken.",
+			tag: "Interactive model // TVA era",
+			model: true
+		},
+			history: {
+			eyebrow: "Every timeline leaves a mark",
+			title: "<span>05.</span> History",
+			copy: "I began as a prince of Asgard, became an enemy of Thor and Earth, and eventually joined the Avengers against greater threats before my original life ended at Thanos' hands. In 2012, during the Avengers' time heist, an alternate version of me escaped with the Tesseract, creating the variant whose story continues in the TVA. My journey through the TVA led me to Sylvie, He Who Remains, countless branching timelines, and ultimately a choice that changed the fate of those timelines.",
+			tag: "Archive file 05 // History"
+		},
+			enemies: {
+			eyebrow: "Chaos always has a witness",
+			title: "<span>06.</span> Enemies",
+			copy: "Thanos became one of my greatest enemies, and in my original timeline he ultimately killed me aboard the Asgardian refugee ship. I also fought against the TVA's system and confronted figures such as Ravonna Renslayer and He Who Remains. Throughout my journey, I faced the consequences of my own variants and the dangerous forces threatening the stability of the multiverse.",
+			tag: "Archive file 06 // Enemies"
+		}
+		};
+
+		const screenContent = document.querySelector("#screen-content");
+		const detailEyebrow = document.querySelector("#detail-eyebrow");
+		const detailTitle = document.querySelector("#detail-title");
+		const detailCopy = document.querySelector("#detail-copy");
+		const detailTag = document.querySelector("#detail-tag");
+		const dossierButtons = document.querySelectorAll(".dossier-button");
+
+		function showArchive(sectionName) {
+			const section = archive[sectionName];
+			if (!section) return;
+
+			dossierButtons.forEach((button) => {
+				button.closest(".dossier").classList.toggle("active", button.dataset.section === sectionName);
+			});
+			screenContent.classList.remove("screen-content");
+			void screenContent.offsetWidth;
+			screenContent.classList.add("screen-content");
+			detailEyebrow.textContent = section.eyebrow;
+			detailTitle.innerHTML = section.title;
+			detailCopy.textContent = section.copy;
+			detailTag.textContent = section.tag;
+
+			const existingModel = screenContent.querySelector(".model-stage");
+			if (existingModel) existingModel.remove();
+			if (section.model) {
+				const modelStage = document.createElement("div");
+				modelStage.className = "model-stage";
+				modelStage.setAttribute("aria-label", "Rotating Loki 3-D character model");
+				detailCopy.before(modelStage);
+				if (window.initLokiScene) window.initLokiScene(modelStage);
+			}
+		}
+
+		dossierButtons.forEach((button) => {
+			button.addEventListener("click", () => showArchive(button.dataset.section));
+		});
+
+	</script>
+	<script type="importmap">
+		{
+			"imports": {
+				"three": "https://esm.sh/three@0.180.0"
+			}
+		}
+	</script>
+	<script type="module" src="./home.js"></script>
+</body>
+</html>
